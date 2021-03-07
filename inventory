@@ -3,3 +3,6 @@
 
 [databaseservers]
 10.128.0.4
+
+[fileservers]
+10.128.0.5
