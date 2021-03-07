@@ -1,2 +1,5 @@
+[webservers]
 10.128.0.3
+
+[databaseservers]
 10.128.0.4

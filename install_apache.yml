@@ -3,17 +3,11 @@
   become: true
   tasks:
 
-  - name: update repository index
+  - name: install apache, update repo index and php package
     yum:
+      name: 
+      - httpd
+      - php
+      state: latest
       update_cache: yes
-
-  - name: install apache package
-    yum:
-      name: httpd
-      state: latest
-
-  - name: add php support for apache
-    yum:
-      name: php
-      state: latest
 
