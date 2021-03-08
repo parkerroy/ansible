@@ -1,87 +1,37 @@
 ---
-- hosts: all
-  become: true
-  pre_tasks:
-
-  - name: install updates
-    yum:
-      update_only: yes
-      update_cache: yes
-    when: ansible_distribution == "CentOS"
-
-- hosts: workstations
-  become: true
-  tasks:
+ 
+ - hosts: all
+   become: true
+   pre_tasks:
+ 
+   - name: update repository index (CentOS)
+     tags: always
+     yum:
+       update_cache: yes
+     changed_when: false
+     when: ansible_distribution == "CentOS"
+ 
+ - hosts: all
+   become: true
+   roles:
+     - base
     
-  - name: install unzip
-    package:
-      name: unzip
-
-  - name: install terraform
-    unarchive:
-      src: https://releases.hashicorp.com/terraform/0.14.7/terraform_0.14.7_linux_amd64.zip
-      dest: /usr/local/bin
-      remote_src: yes
-      mode: 0755
-      owner: root
-      group: root
-
-- hosts: webservers
-  become: true 
-  tasks: 
-
-  - name: install apache and php package
-    tags: httpd,apache,centos
-    yum:
-      name: 
-      - httpd
-      - php
-      state: latest
-    when: ansible_distribution == "CentOS"
-
-  - name: start httpd services (CentOS)
-    tags: apache,centos,httpd
-    service:
-      name: httpd
-      state: started
-      enabled: yes
-    when: ansible_distribution == "CentOS"
-
-  - name: change email address for admin
-    tags: apache,centos,httpd
-    lineinfile:
-      path: /etc/httpd/conf/httpd.conf
-      regexp: '^ServerAdmin'
-      line: ServerAdmin someone@somebody.net
-    when: ansible_distribution == "CentOS"
-    register: httpd
-  
-  - name: restart httpd (CentOS)
-    tags: apache,centos,httpd
-    service: 
-      name: httpd
-      state: restarted
-    when: httpd.changed  
-
-  
-  - name: copy default html file for site
-    tags: httpd,apache,centos
-    copy:
-      src: default_site.html
-      dest: /var/www/html/index.html
-      owner: root
-      group: root
-      mode: 0644    
-
-- hosts: databaseservers
-  become: true
-  tasks:
-  
-  - name: install mariadb package
-    yum: 
-      name: mariadb
-      state: latest
-    when: ansible_distribution == "CentOS"
-
-- hosts: fileservers
-  
+ - hosts: workstations
+   become: true
+   roles:
+     - workstations
+ 
+ - hosts: webservers
+   become: true
+   roles:
+     - webservers
+ 
+ - hosts: databaseservers
+   become: true
+   roles:
+     - databaseservers
+ 
+ - hosts: fileservers
+   become: true
+   roles:
+     - fileservers

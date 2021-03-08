@@ -1,0 +1,4 @@
+ - name: add ssh key for parker
+   authorized_key:
+     user: parker
+     key: "<insert public SSH key>"

@@ -1,0 +1,34 @@
+---
+ 
+ - hosts: all
+   become: true
+   pre_tasks:
+ 
+   - name: install updates (CentOS)
+     tags: always
+     yum:
+       update_only: yes
+       update_cache: yes
+     when: ansible_distribution == "CentOS"
+ 
+ - hosts: all
+   become: true
+   tasks:
+ 
+   - name: create parker user
+     user:
+       name: parker
+       groups: root
+ 
+   - name: add ssh key for parker
+     authorized_key:
+       user: parker
+       key: "public ssh key"
+      
+   - name: add sudoers file for parker
+     copy:
+       src: sudoer_parker
+       dest: /etc/sudoers.d/parker
+       owner: root
+       group: root
+       mode: 0440i
