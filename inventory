@@ -6,3 +6,6 @@
 
 [fileservers]
 10.128.0.5
+
+[workstations]
+10.128.0.2
